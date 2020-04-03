@@ -1,0 +1,13 @@
+<nav class="table-responsive">
+    <table class="table m-0 text-center">
+        <thead>
+            <tr>
+                {volist name="$result" id="vo"}
+                <th>
+                    <a href="{:url('index/index/index',['id'=>$vo.id])}" title="">{$vo.name}</a>
+                </th>
+                {/volist}
+            </tr>
+        </thead>
+    </table>
+</nav>

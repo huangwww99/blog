@@ -1,0 +1,87 @@
+{extend name="public/base"/}
+{block name="bread"}
+<li class="breadcrumb-item active" aria-current="page">学员编辑</li>
+{/block}
+{block name="content"}
+<div class="row">
+    <div class="col-sm-6 offset-sm-3">
+        <h3>{$info.user_name}学员详细资料</h3>
+        <hr>
+        <form method="POST">
+            <input type="hidden" value="{$info.id}" name="id">
+            <div class="form-group">
+                <label for="exampleInputEmail1">姓名</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    placeholder="请输入学员姓名" name="user_name" value="{$info.user_name}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">邮箱</label>
+                <input type="text" class="form-control" id="exampleInputPassword1" placeholder="请输入学员邮箱" name="email"
+                    value="{$info.email}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">状态</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="1" name="status" {if $info.status==1
+                        }checked{else/}{/if}>
+                    <label class="form-check-label" for="c1">正常</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="status" value="0" {if $info.status==0
+                        }checked{else/}{/if}>
+                    <label class="form-check-label" for="c2">禁用</label>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">管理员</label>&nbsp;&nbsp;
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="is_admin" value="1" {if $info.is_admin==1
+                        }checked{else/}{/if}>
+                    <label class="form-check-label" for="a1">是</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="0" name="is_admin" {if $info.is_admin==0
+                        }checked{else/}{/if}>
+                    <label class="form-check-label" for="a2">否</label>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary  offset-sm-5" id="edit" value="">确定修改</button>
+        </form>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#edit').click(function () {
+            layer.confirm('你确定要修改吗？', {
+                btn: ['确定', '算了'],
+            }, function () {
+                $.ajax({
+                    type: 'post',
+                    url: "{:url('admin/user/postEdit')}",
+                    data: $('form').serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 200) {
+                            layer.alert(data.msg, {
+                                icon: 1,
+                                time: 1000,
+                                end: function () {
+                                    window.location.href = "{:url('admin/user/lis')}"
+                                }
+                            });
+
+                        } else {
+                            layer.alert(data.msg)
+                        }
+                    }
+                })
+            });
+        });
+    })
+</script>
+
+
+{/block}

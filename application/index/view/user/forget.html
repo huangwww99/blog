@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {include file="public/css"}
+    {include file="public/js"}
+    <title>
+        {$footer.site_name}
+    </title>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row " style="margin-top: 100px ; ">
+            <div class="col d-flex justify-content-center mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <form>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td>邮箱</td>
+                                    <td> <input type="email" class="form-control" name="email" placeholder="请输入注册邮箱">
+                                    </td>
+                                    <td><button type="button" class="btn btn-primary " id="send">发送验证码</button></td>
+                                </tr>
+                                <tr>
+                                    <td>验证码</td>
+                                    <td colspan="2"><input type="text" class="form-control" name="code"
+                                            placeholder="请输入验证码">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>密码</td>
+                                    <td colspan="2"><input type="password" class="form-control" name="password"
+                                            placeholder="请输入新的密码">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-center"><button type="button" class="btn btn-primary "
+                                            id="editPassword">确定修改</button></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $('#logind').click(function () {
+                $.ajax({
+                    url: "{:url('index/user/logined')}",
+                    type: 'post',
+                    data: $('form').serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 200) {
+                            layer.alert(data.msg, {
+                                icon: 1,
+                                time: 1000,
+                                end: function () {
+                                    window.location.href = "{:url('index/index/index')}"
+                                }
+                            })
+                        } else {
+                            layer.alert(data.msg, {
+                                icon: 0
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            })
+        })
+        //发送验证码
+        $(function () {
+            $('#send').click(function () {
+                $.ajax({
+                    url: "{:url('index/user/send')}",
+                    type: 'post',
+                    data: $('form').serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 200) {
+                            layer.alert(data.msg, {
+                                icon: 1,
+                                time: 1000
+
+                            })
+                        } else {
+                            layer.alert(data.msg, {
+                                icon: 0
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            })
+        })
+        //修改密码
+        $(function () {
+            $('#editPassword').click(function () {
+                $.ajax({
+                    url: "{:url('index/user/editPassword')}",
+                    type: 'post',
+                    data: $('form').serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 200) {
+                            layer.alert(data.msg, {
+                                icon: 1,
+                                time: 1000,
+                                end: function () {
+                                    window.location.href = "{:url('index/user/login')}"
+                                }
+                            })
+                        } else {
+                            layer.alert(data.msg, {
+                                icon: 0
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            })
+        })
+    </script>
+</body>
+
+</html>

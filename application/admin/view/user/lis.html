@@ -1,0 +1,209 @@
+{extend name="public/base"/}
+{block name="bread"}
+<li class="breadcrumb-item active" aria-current="page">学员管理</li>
+{/block}
+{block name="content"}
+<div class="row">
+    <div class="col">
+        <div class="d-flex justify-content-between mb-2">
+            <a href="javascript:;" class="btn btn-primary" data-toggle="modal" data-target="#add">添加学员</a>
+            <form action="{:url('admin/user/lis')}" method="GET">
+                <div class="input-group ">
+                    <input type="text" class="form-control" name="user_name" placeholder="搜谁"
+                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" class="submit">搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">姓名</th>
+                <th scope="col">邮箱</th>
+                <th scope="col">状态</th>
+                <th scope="col">是否为管理员</th>
+                <th scope="col">加入时间</th>
+                <th scope="col">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='lis' id='vo'}
+            <tr>
+                <th scope="row">{$vo.id}</th>
+                <td>{$vo.user_name}</td>
+                <td>{$vo.email}</td>
+                <td>{switch $vo.status}
+                    {case 1}<span class="text-success">正常</span>{/case}
+                    {case 0}<span class="text-danger">禁用</span>{/case}
+                    {/switch}</td>
+                <td>{switch $vo.is_admin}
+                    {case 1}<span class="text-success">是</span>{/case}
+                    {case 0}<span class="text-danger">否</span>{/case}
+                    {/switch}</td>
+                <td>{$vo.create_time}</td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                        <a href="{:url('admin/user/edit',['id'=>$vo.id])}" title="" class="btn btn-outline-info"><i
+                                class="fa fa-edit"></i></a>
+                        <a href="javascript:;" title="" onclick="del('{$vo.id}')" class="btn btn-outline-danger"><i
+                                class="fa fa-trash"></i></a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-center"> {$page|raw}</div>
+
+</div>
+</div>
+
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">添加学员 <small class="text-danger"></small></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add_from" method="POST">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">姓名</label>
+                        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                            placeholder="请输入学员姓名" name="user_name" id="user_name">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">邮箱</label>
+                        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="请输入学员邮箱"
+                            name="email" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">密码</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="请输入学员密码"
+                            name="password" id="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">确认密码</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="请输入学员密码"
+                            name="repassworld" id="repassworld">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="add_btn" value="">确认添加</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#add_from input').blur(function () {
+            var val = $.trim($(this).val())
+            if ($(this).is('#user_name')) {
+                if (val == '' || val.length < 3 || val.length > 20) {
+                    $('.text-danger').text('姓名不空，不少于3位，不多于20位');
+
+                } else {
+                    $('.text-danger').text('');
+                }
+            }
+            if ($(this).is('#email')) {
+                var reg = /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/;
+                if (val == '' || reg.test(val)) {
+                    $('.text-danger').text('邮箱不为空，格式错误');
+
+                } else {
+                    $('.text-danger').text('');
+                }
+            }
+            if ($(this).is('#password')) {
+                if (val == '' || val.length < 6 || val.length > 20) {
+                    $('.text-danger').text('密码不空，不少于6位，不多于20位');
+
+                } else {
+                    $('.text-danger').text('');
+                }
+            }
+            if ($(this).is('#repassworld')) {
+                var pass = $('#passworld').val();
+
+                if (val == '' || val !== pass) {
+                    $('.text-danger').text('确认密码不一致');
+
+                } else {
+                    $('.text-danger').text('');
+                }
+            }
+        });
+
+    });
+    $(function () {
+        $('#add_btn').on('click', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "{:url('admin/user/add')}",
+                type: 'post',
+                data: $('#add_from').serialize(),
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 200) {
+                        layer.alert(data.msg, {
+                            icon: 1,
+                            time: 2000,
+                            end: function () {
+                                window.location.href = "{:url('admin/user/lis')}"
+                            }
+                        })
+                    } else {
+                        layer.alert(data.msg, {
+                            icon: 0
+                        });
+
+                    }
+
+                }
+
+            });
+
+            return false;
+        });
+    });
+    function del($id) {
+        layer.confirm('你确定要删除吗？', {
+            btn: ['确定', '算了'],
+        }, function () {
+            var id = $id;
+            $.ajax({
+                type: 'post',
+                url: "{:url('admin/user/del')}",
+                data: { id: id },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 200) {
+                        layer.alert(data.msg, {
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.location.href = "{:url('admin/user/lis')}"
+                            }
+                        });
+
+                    } else {
+                        layer.alert(data.msg)
+                    }
+                }
+            })
+        });
+
+    }
+</script>
+{/block}

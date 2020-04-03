@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {include file="public/css"}
+    {include file="public/js"}
+    <title>
+        {$footer.site_name}
+    </title>
+</head>
+
+<body>
+    {include file="public/header"}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-9 d-none d-sm-block">
+                <div class="card-body ">
+                    <h5 class="card-title text-center"></h5>
+                    <p class="card-text   bg-white  "></p>
+                </div>
+
+            </div>
+            <div class="col-3 d-none d-sm-block">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        作者发布的其它文章
+                    </div>
+                    <ul class="list-group list-group-flush">
+
+                        <li class="list-group-item"><a href="" title=""></a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-9">
+                <form>
+                    <input type="hidden" value="{$Think.session.userSession.id}" name="user_id">
+                    <input type="hidden" value="{$data.id}" name="article_id">
+                    <div class="input-group mb-3">
+                        {empty name="$Think.session.userSession"}
+                        <input type="text" class="form-control" placeholder="请先登录后发表评论 (・ω・)"
+                            aria-label="Recipient's username" aria-describedby="button-addon2">
+
+                        {else/}
+                        <input type="text" class="form-control" placeholder="请注意您的用词" aria-label="Recipient's username"
+                            aria-describedby="button-addon2" name="content">
+                        {/empty}
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" id="add">评论</button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+
+
+                <div class=""> <span class="text-primary"></span><span class="ml-2"></span></div>
+                <p class="card-text"></p>
+
+
+            </div>
+        </div>
+    </div>
+    </form>
+    <script>
+        $('#add').click(function () {
+            $.ajax({
+                url: "{:url('index/comment/add')}",
+                type: 'post',
+                data: $('form').serialize(),
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data.code == 200) {
+                        layer.alert(data.msg, {
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                window.location.href = "{:url('index/article/detail',['id'=>$data.id])}"
+                            }
+                        })
+                    } else {
+                        layer.alert(data.msg, {
+                            icon: 0
+                        });
+
+                    }
+                }
+
+            })
+        })
+    </script>
+</body>
+
+</html>

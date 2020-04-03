@@ -1,0 +1,179 @@
+{extend name="public/base"/}
+{block name="bread"}
+<li class="breadcrumb-item active" aria-current="page">导航管理</li>
+{/block}
+{block name="content"}
+<div class="row">
+    <div class="col">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#base" role="tab" aria-controls="home"
+                    aria-selected="true">基本设置</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#nav" role="tab" aria-controls="profile"
+                    aria-selected="false">导航栏目</a>
+            </li>
+
+        </ul>
+        <div class="tab-content " style="margin-bottom: 100px;">
+            <div class="tab-pane fade show active" id="base" role="tabpanel" aria-labelledby="home-tab">
+                {empty name="$footer"}
+                网站基本信息设置关闭
+                {else /}
+                <form id="set">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">网站名称</label>
+                        <input type="hidden" class="form-control" value="{$footer.id}" name="id">
+                        <input type="text" class="form-control" value="{$footer.site_name}" name="site_name">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">网站关键词</label>
+                        <input type="text" class="form-control" value="{$footer.site_keyword}" name="site_keyword">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">网站描述</label>
+                        <input type="text" class="form-control" value="{$footer.site_descript}" name="site_descript">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">备案信息</label>
+                        <input type="text" class="form-control" value="{$footer.site_copy}" name="site_copy">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">网站底部描述</label>
+                        <input type="text" class="form-control" value="{$footer.site_footer}" name="site_footer">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">网站底部</label>&nbsp;
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="status" id="inlineRadio1" value="1" {if
+                                $footer.status eq 1}checked{else/}{/if}>
+                            <label class="form-check-label" for="inlineRadio1">开启</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="status" id="inlineRadio2" value="0" {if
+                                $footer.status eq 0}checked{else/}{/if}>
+                            <label class="form-check-label" for="inlineRadio2">关闭</label>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary " id="btn-set"> 提交</button>
+                </form>
+                {/empty}
+
+
+            </div>
+            <div class="tab-pane fade" id="nav" role="tabpanel" aria-labelledby="profile-tab">
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">id</th>
+                            <th scope="col">栏目名称</th>
+                            <th scope="col">栏目排序</th>
+                            <th scope="col">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="$result" id="vo"}
+                        <tr>
+                            <th scope="row">{$vo.id}</th>
+                            <td>{$vo.name}</td>
+                            <td>{$vo.sort}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#edit" onclick="edit('{$vo.name}','{$vo.sort}')">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#del">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+                <div class="">
+                    <button type="button" class="btn btn-primary">
+                        添加栏目
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">修改栏目 <small class="text-danger"></small></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add_from" method="POST">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">栏目名</label>
+                        <input type="text" class="form-control" id="name" aria-describedby="emailHelp"
+                            placeholder="请输入栏目名" name="user_name">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">排序</label>
+                        <input type="text" class="form-control" id="sort" placeholder="请输入排序" name="email">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="edited" value="">确认修改</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    // 基本设置修改
+    $(function () {
+        $('#btn-set').click(function () {
+            layer.confirm('你确定要修改吗？', {
+                btn: ['确定', '再想想'],
+            }, function () {
+                $.ajax({
+                    type: 'post',
+                    url: "{:url('admin/system/set')}",
+                    data: $('form').serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 200) {
+                            layer.alert(data.msg, {
+                                icon: 1,
+                                time: 1000,
+                                end: function () {
+                                    window.location.href = "{:url('admin/system/index')}"
+                                }
+                            });
+
+                        } else {
+                            layer.alert(data.msg)
+                        }
+                    }
+                })
+            });
+        });
+    })
+    //导航栏修改 将导航栏名和排序赋值给弹出框
+    function edit($id, $a) {
+        var id = $id;
+        var a = $a;
+        $('#name').val(id);
+        $('#sort').val(a);
+    }
+
+</script>
+{/block}

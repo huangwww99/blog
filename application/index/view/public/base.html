@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {include file="public/css"}
+    {include file="public/js"}
+    <title>
+        {$footer.site_name}
+    </title>
+</head>
+
+<body>
+    {include file="public/header"}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9">
+
+                <div class="row shadow mb-2 bg-white rounded">
+                    <div class="col p-0">
+                        {include file="public/nav"}
+                    </div>
+                </div>
+                <div class="row shadow mb-2 bg-white rounded">
+                    <div class="col p-0">
+                        {block name="content"}{/block}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 d-none d-sm-block">
+                {include file="public/menu"}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {include file="public/css"}
+    {include file="public/js"}
+    <title>
+        后台管理系统
+    </title>
+</head>
+
+<body>
+    {include file="public/nav"}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-white border-bottom  rounded-0">
+                        <li class="breadcrumb-item active" aria-current="page"><a href="{:url('admin/index/index')}"><i
+                                    class="fa fa-home">&nbsp;桌面</i></a></li>
+                        {block name="bread"}{/block}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        {block name="content"}{/block}
+
+    </div>
+    {include file="public/footer"}
+</body>
+
+</html>
