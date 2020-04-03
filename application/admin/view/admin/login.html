@@ -42,7 +42,7 @@
         $(function () {
             $('#login').click(function () {
                 $.ajax({
-                    url: "{:url('admin/admin/logined')}",
+                    url: "{:url('admin/admin/login')}",
                     type: 'post',
                     data: $('form').serialize(),
                     dataType: 'json',
